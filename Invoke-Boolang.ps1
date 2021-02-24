@@ -12,6 +12,17 @@ function Invoke-Boolang
         Required Dependencies: None
         Optional Dependencies: None
 
+    .CONVERSION
+
+        $BooSource = @'
+            import System
+
+            public static def Main():
+                print "Hello from BooLang!"
+        '@
+        $BooSource = [System.Text.Encoding]::UTF8.GetBytes($BooSource)
+        $BooSource = [System.Convert]::ToBase64String($BooSource)
+
     .EXAMPLE
 
         PS> Invoke-Boolang -BooSource 'aW1wb3J0IFN5c3RlbQ0KDQpwdWJsaWMgc3RhdGljIGRlZiBNYWluKCk6DQogICAgcHJpbnQgIkhlbGxvIGZyb20gQm9vTGFuZyEi'
