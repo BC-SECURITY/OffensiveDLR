@@ -114,7 +114,11 @@ vH0HfJRF+v/MvJvdzW4CbMpuIEBCCSyhBQiwJIGEZkGwYCEBC1UBlcUEEAiL9BAICIiKqKiIDVE5KyBn
     $parameters.AddAssembly([Reflection.Assembly]::LoadWithPartialName("System"))
     $parameters.AddAssembly([Reflection.Assembly]::LoadWithPartialName("System.Core"))
 
-    #Write-Output $parameters.References
+    # Setting a custom stdout to capture Console.WriteLine output
+    # https://stackoverflow.com/questions/33111014/redirecting-output-from-an-external-dll-in-powershell
+    $OldConsoleOut = [Console]::Out
+    $StringWriter = New-Object IO.StringWriter
+    [Console]::SetOut($StringWriter)
 
     $compiler = [Boo.Lang.Compiler.BooCompiler]::new($parameters)
 
@@ -132,4 +136,9 @@ vH0HfJRF+v/MvJvdzW4CbMpuIEBCCSyhBQiwJIGEZkGwYCEBC1UBlcUEEAiL9BAICIiKqKiIDVE5KyBn
         Write-Output "`nError(s) when compiling Boo source!`n"
         Write-Output $context.Errors.ToString($true)
     }
+
+    # Restore the regular STDOUT object
+    [Console]::SetOut($OldConsoleOut)
+    $Results = $StringWriter.ToString()
+    $Results
 }
